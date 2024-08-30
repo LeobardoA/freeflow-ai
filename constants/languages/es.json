@@ -1,0 +1,7 @@
+{
+    "welcome": "¡Bienvenido a mi aplicación!",
+    "positivePrompt": "Prompt Positivo",
+    "negativePrompt": "Prompt Negativo",
+    "models": "Modelos",
+    "loadingResource": "Cargando Recurso"
+}
