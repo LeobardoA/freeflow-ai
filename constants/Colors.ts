@@ -5,13 +5,13 @@
 
 export const Colors = {
   light: {
-    backgroundColor: "#F5F5F5", // Fondo Principal
+    backgroundColor: "#F0F0F0", // Fondo Principal
     primaryColor: "#00BFA6", // Color Primario
-    secondaryColor: "#6200EA", // Color Secundario
+    secondaryColor: "#BB86FC", // Color Secundario
     accentColor: "#FFD600", // Color de Acento
     textColor: "#212121", // Texto Principal
     subTextColor: "#757575", // Texto Secundario
-    borderColor: "#E0E0E0", // Bordes y Divisores
+    borderColor: "#BBB", // Bordes y Divisores
     cardsColor: "#FFFFFF", // Color de Cards y Modales
     successColor: "#4CAF50", // Verde para Éxito (puede ajustarse)
     warningColor: "#FF9800", // Naranja para Advertencias (puede ajustarse)
@@ -25,7 +25,7 @@ export const Colors = {
   dark: {
     backgroundColor: "#121212", // Fondo Principal
     primaryColor: "#00BFA6", // Color Primario
-    secondaryColor: "#BB86FC", // Color Secundario
+    secondaryColor: "#6200EA", // Color Secundario6200EA
     accentColor: "#FFD600", // Color de Acento
     textColor: "#FFFFFF", // Texto Principal
     subTextColor: "#B3B3B3", // Texto Secundario

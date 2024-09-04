@@ -53,7 +53,7 @@ export async function DB_GetAllTxt2ImgRequests() {
   console.log("GETTING ALL ROWS...");
   const db = await setupDatabase();
   const allRows = await db.getAllAsync("SELECT * FROM Txt2ImgRequests");
-  console.log(allRows);
+  return allRows;
 }
 export async function DB_GetLastTxt2ImgRequests() {
   console.log("GETTING ALL ROWS...");

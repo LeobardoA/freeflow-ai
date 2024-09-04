@@ -57,23 +57,3 @@ export enum Upscaler {
   SwinIR4x = "SwinIR_4x",
   NMKDSuperscale8x = "8x_NMKD-Superscale_150000_G",
 }
-
-// Enum for ControlNet Models
-export enum ControlNetModel {
-  OpenPose = "control_v11p_sd15_openpose",
-  None = "None",
-  Canny = "control_v11p_sd15_canny",
-  Depth = "control_v11f1p_sd15_depth",
-  LineArt = "control_v11p_sd15_lineart",
-  LineArtAnime = "control_v11p_sd15s2_lineart_anime",
-  MLSd = "control_v11p_sd15_mlsd",
-  NormalBae = "control_v11p_sd15_normalbae",
-  Scribble = "control_v11p_sd15_scribble",
-  SoftEdge = "control_v11p_sd15_softedge",
-  Seg = "control_v11p_sd15_seg",
-  Shuffle = "control_v11e_sd15_shuffle",
-  Ip2p = "control_v11e_sd15_ip2p",
-  QrcodeMonster = "control_v1p_sd15_qrcode_monster",
-  Brightness = "control_v1p_sd15_brightness",
-  Inpaint = "control_v11p_sd15_inpaint",
-}

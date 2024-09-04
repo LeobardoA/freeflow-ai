@@ -228,10 +228,9 @@ export async function checkModelData(modelID: string) {
     authHeader
   );
   if (response.model !== undefined) {
-    console.log(JSON.stringify(response, null, 4));
-    return response;
+    return response.model;
   } else {
-    console.log("RESPONSE STATUS: ", response.status);
-    return response;
+    console.error("RESPONSE STATUS: ", response.status);
+    return null;
   }
 }

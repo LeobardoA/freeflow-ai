@@ -1,31 +1,35 @@
+import { Colors } from "@/constants/Colors";
+import localization from "@/constants/languages";
+import { Ionicons } from "@expo/vector-icons";
 import React, { useEffect, useState } from "react";
-import { ThemedView } from "../ThemedView";
 import {
-  StyleSheet,
-  View,
   ActivityIndicator,
+  StyleSheet,
   TouchableOpacity,
   useColorScheme,
+  View,
 } from "react-native";
 import { ThemedText } from "../ThemedText";
-import localization from "@/constants/languages";
 import { ThemedTextInput } from "../ThemedTextInput";
-import { Colors } from "@/constants/Colors";
+import { ThemedView } from "../ThemedView";
 import { GenerationPersistence } from "./Persistence";
-import { Ionicons } from "@expo/vector-icons";
+import { useGenerationStore } from "../contexts/GenerationStore";
 
 const Prompts = () => {
   const [loading, setLoading] = useState(true);
-  const [positivePrompt, setPositivePrompt] = useState("");
-  const [negativePrompt, setNegativePrompt] = useState("");
+
+  const positivePrompt = useGenerationStore((state) => state.positivePrompt);
+  const negativePrompt = useGenerationStore((state) => state.negativePrompt);
 
   const colorScheme = useColorScheme();
 
   useEffect(() => {
     const loadData = async () => {
       await GenerationPersistence.loadFromStorage();
-      setPositivePrompt(GenerationPersistence.positivePrompt);
-      setNegativePrompt(GenerationPersistence.negativePrompt);
+      useGenerationStore.setState({
+        positivePrompt: GenerationPersistence.positivePrompt,
+        negativePrompt: GenerationPersistence.negativePrompt,
+      });
       setLoading(false);
     };
 
@@ -33,13 +37,13 @@ const Prompts = () => {
   }, []);
 
   const handlePositivePromptChange = async (text: string) => {
-    setPositivePrompt(text);
+    useGenerationStore.setState({ positivePrompt: text });
     GenerationPersistence.positivePrompt = text;
     await GenerationPersistence.saveToStorage();
   };
 
   const handleNegativePromptChange = async (text: string) => {
-    setNegativePrompt(text);
+    useGenerationStore.setState({ negativePrompt: text });
     GenerationPersistence.negativePrompt = text;
     await GenerationPersistence.saveToStorage();
   };

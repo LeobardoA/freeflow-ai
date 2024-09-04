@@ -3,5 +3,13 @@
     "positivePrompt": "Positive Prompt",
     "negativePrompt": "Negative Prompt",
     "models": "Models",
-    "loadingResource": "Loading Resource"
+    "loadingResource": "Loading Resource",
+    "select": "Select",
+    "settings": "Settings",
+    "custom": "Custom",
+    "width": "Width",
+    "height": "Height",
+    "steps": "Steps",
+    "seed": "Seed",
+    "generate": "Generate"
 }

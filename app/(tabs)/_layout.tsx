@@ -4,10 +4,14 @@ import { Stack } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
-import { Text } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 import { Colors } from "@/constants/Colors";
+import { MaterialIcons } from "@expo/vector-icons";
+import useThemeColors from "@/hooks/useThemeColor";
 
 export default function TabLayout() {
+  const themeColor = useThemeColors();
+
   return (
     <Stack
       screenOptions={{
@@ -16,29 +20,39 @@ export default function TabLayout() {
             <ThemedView
               style={{
                 flexDirection: "row",
-                paddingVertical: 10,
-                paddingLeft: 10,
+                justifyContent: "space-between",
+                alignItems: "center",
+                padding: 10,
               }}
             >
-              <ThemedText
-                style={{
-                  fontSize: 22,
-                  fontFamily: "Inter",
-                  fontWeight: "bold",
-                }}
-              >
-                FreeFlow{" "}
-              </ThemedText>
-              <Text
-                style={{
-                  fontSize: 22,
-                  color: Colors.dark.primaryColor,
-                  fontFamily: "Inter",
-                  fontWeight: "bold",
-                }}
-              >
-                AI
-              </Text>
+              <View style={{ flexDirection: "row" }}>
+                <ThemedText
+                  style={{
+                    fontSize: 22,
+                    fontFamily: "Inter",
+                    fontWeight: "bold",
+                  }}
+                >
+                  FreeFlow{" "}
+                </ThemedText>
+                <Text
+                  style={{
+                    fontSize: 22,
+                    color: Colors.dark.primaryColor,
+                    fontFamily: "Inter",
+                    fontWeight: "bold",
+                  }}
+                >
+                  AI
+                </Text>
+              </View>
+              <TouchableOpacity>
+                <MaterialIcons
+                  name="photo-library"
+                  size={22}
+                  color={themeColor.textColor}
+                />
+              </TouchableOpacity>
             </ThemedView>
           </SafeAreaView>
         ),

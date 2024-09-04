@@ -14,9 +14,9 @@ export class GenerationPersistence {
   static cfgScale: number;
   static clipSkip: number;
   static etaNoise: number;
+  static extra_baseModel: string;
 
   static async loadFromStorage() {
-    console.log("Loading prompts from persistence file...");
     try {
       const data = await AsyncStorage.getItem("generationPersistence");
       if (data !== null) {
@@ -44,6 +44,7 @@ export class GenerationPersistence {
         cfgScale: GenerationPersistence.cfgScale,
         clipSkip: GenerationPersistence.clipSkip,
         etaNoise: GenerationPersistence.etaNoise,
+        extra_baseModel: GenerationPersistence.extra_baseModel,
       });
       await AsyncStorage.setItem("generationPersistence", data);
     } catch (error) {

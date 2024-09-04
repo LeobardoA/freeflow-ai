@@ -6,6 +6,14 @@ interface LocalizationStrings {
   negativePrompt: string;
   models: string;
   loadingResource: string;
+  select: string;
+  settings: string;
+  custom: string;
+  width: string;
+  height: string;
+  steps: string;
+  seed: string;
+  generate: string;
 }
 
 const languages: Record<string, LocalizationStrings> = {
