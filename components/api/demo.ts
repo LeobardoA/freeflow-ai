@@ -1,5 +1,6 @@
 import { CryptoDigestAlgorithm, digestStringAsync } from "expo-crypto";
 import { generateSignature } from "./signature";
+import { useGenerationStore } from "../contexts/GenerationStore";
 
 // tensor
 const urlPre = "https://ap-east-1.tensorart.cloud";
@@ -72,15 +73,15 @@ export function createTxt2imgData(): Txt2imgData {
         type: "DIFFUSION",
         diffusion: {
           width: 512,
-          height: 768,
+          height: 512,
           prompts: [
             {
-              text: "masterpiece, best quality, 1girl, blonde hair, long hair, white shirt, off-shoulder shirt, black thighhighs, garter straps, smile, blush,",
+              text: "",
             },
           ],
           negativePrompts: [
             {
-              text: "EasyNegative",
+              text: "",
             },
           ],
           sdModel: "600315593373002855",
@@ -99,73 +100,49 @@ export function createTxt2imgData(): Txt2imgData {
   };
 }
 
-export async function text2img(
-  data: Txt2imgData | null
-): Promise<string | null> {
+export async function text2img(data: Txt2imgData | null) {
+  console.log(JSON.stringify(data, null, ));
   if (data !== null) {
-    // console.log(JSON.stringify(data, null, 4));
-    data.requestId = await createMD5();
-    const txt2imgData = data;
-    const resp = await createJob(txt2imgData);
+    const id = await createMD5();
+    data.requestId = id;
+    const resp = await createJob(data);
     if ("job" in resp) {
       const job_dict = resp.job;
       const job_id = job_dict.id;
       const job_status = job_dict.status;
-      console.log(job_id, job_status);
-      return await getJobResult(job_id);
+      // console.log(job_id, job_status);
+      const result = await getJobResult(job_id);
+      return result;
     }
   }
-  return null;
 }
 
-async function createJob(txt2imgData: Txt2imgData) {
-  const authHeader = await generateSignature(
-    "POST",
-    jobUrl,
-    appId,
-    txt2imgData
-  );
-  return await sendRequest("POST", urlPre + jobUrl, txt2imgData, authHeader);
+export async function createMD5(): Promise<string> {
+  try {
+    const timestamp = Date.now().toString();
+    const digest = await digestStringAsync(
+      CryptoDigestAlgorithm.MD5,
+      timestamp
+    );
+    return digest;
+  } catch (error) {
+    throw new Error("Error creating MD5: " + error);
+  }
 }
 
-async function getJobResult(jobId: string): Promise<string | null> {
-  while (true) {
-    await new Promise((resolve) => setTimeout(resolve, 1000)); // Sleep for 1 second
+export async function createJob(txt2imgData: Txt2imgData) {
+  console.log("Creando trabajo...");
+  try {
     const authHeader = await generateSignature(
-      "GET",
-      jobUrl + "/" + jobId,
+      "POST",
+      jobUrl,
       appId,
-      null
+      txt2imgData
     );
-    const resp = await sendRequest(
-      "GET",
-      urlPre + jobUrl + "/" + jobId,
-      null,
-      authHeader
-    );
-    if ("job" in resp) {
-      const jobDict = resp.job;
-      const jobStatus = jobDict.status;
-      console.log(jobStatus);
-      if (jobStatus === "SUCCESS") {
-        console.log(JSON.stringify(jobDict));
-        if (
-          jobDict.successInfo &&
-          jobDict.successInfo.images &&
-          jobDict.successInfo.images[0]
-        ) {
-          return jobDict.successInfo.images[0].url;
-        }
-        break;
-      } else if (jobStatus === "FAILED") {
-        console.log(JSON.stringify(jobDict));
-        break;
-      } else {
-        console.log(JSON.stringify(jobDict));
-      }
-    }
+    return await sendRequest("POST", urlPre + jobUrl, txt2imgData, authHeader);
+  } catch (error) {
+    throw new Error("Error creating job: " + error);
   }
-  return null;
 }
 
 async function sendRequest(
@@ -206,10 +183,55 @@ async function sendRequest(
   return await response.json();
 }
 
-async function createMD5(): Promise<string> {
-  const timestamp = Date.now().toString();
-  const digest = await digestStringAsync(CryptoDigestAlgorithm.MD5, timestamp);
-  return digest;
+export async function getJobResult(jobId: string) {
+  while (true) {
+    await new Promise((resolve) => setTimeout(resolve, 1000)); // Sleep for 1 second
+    const authHeader = await generateSignature(
+      "GET",
+      jobUrl + "/" + jobId,
+      appId,
+      null
+    );
+    const resp = await sendRequest(
+      "GET",
+      urlPre + jobUrl + "/" + jobId,
+      null,
+      authHeader
+    );
+    if ("job" in resp) {
+      const jobDict = resp.job;
+      const jobStatus = jobDict.status;
+      useGenerationStore.setState({
+        extra_progressMessage: JSON.stringify(jobDict),
+      });
+      if (jobStatus === "SUCCESS") {
+        // console.log(JSON.stringify(jobDict));
+        useGenerationStore.setState({ extra_progressMessage: undefined });
+        return jobDict;
+        break;
+      } else if (jobStatus === "FAILED") {
+        // console.log(JSON.stringify(jobDict));
+        break;
+      }
+    }
+  }
+}
+
+export async function getJobCredits(txt2imgData: Txt2imgData) {
+  const authHeader = await generateSignature(
+    "POST",
+    jobUrl + "/credits",
+    appId,
+    txt2imgData
+  );
+  const response = await sendRequest(
+    "POST",
+    urlPre + jobUrl + "/credits",
+    txt2imgData,
+    authHeader
+  );
+  console.log(JSON.stringify(response));
+  return response;
 }
 
 // Nueva función para obtener los detalles del modelo

@@ -1,5 +1,4 @@
 {
-    "welcome": "Welcome to my app!",
     "positivePrompt": "Positive Prompt",
     "negativePrompt": "Negative Prompt",
     "models": "Models",
@@ -10,6 +9,9 @@
     "width": "Width",
     "height": "Height",
     "steps": "Steps",
+    "cfgScale": "CFG Scale",
+    "samplerMethod":"Sampler Method",
     "seed": "Seed",
-    "generate": "Generate"
+    "generate": "Generate",
+    "add": "Add"
 }

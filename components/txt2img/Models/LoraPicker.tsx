@@ -15,17 +15,17 @@ import {
 } from "react-native";
 import ModelSelector from "./ModelSelector";
 
-interface CheckpointPickerProps {
+interface LoraPickerProps {
   isVisible: boolean;
-  onClose: (id: string, base:string) => void;
+  onClose: (id: string) => void;
   data: ModelDataProps[] | null;
 }
 
-const CheckpointPicker = ({
+const LoraPicker = ({
   isVisible,
   onClose,
   data,
-}: CheckpointPickerProps) => {
+}: LoraPickerProps) => {
   const colorScheme = useColorScheme();
 
   return (
@@ -42,7 +42,7 @@ const CheckpointPicker = ({
         >
           <TouchableOpacity
             onPress={() => {
-              onClose("0", "0");
+              onClose("0");
             }}
             style={[
               style.closeButton,
@@ -84,7 +84,7 @@ const CheckpointPicker = ({
   );
 };
 
-export default CheckpointPicker;
+export default LoraPicker;
 
 const style = StyleSheet.create({
   content: {

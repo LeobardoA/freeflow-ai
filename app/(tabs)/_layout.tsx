@@ -1,13 +1,14 @@
 import React from "react";
 
-import { Stack } from "expo-router";
+import { router, Stack } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { Text, TouchableOpacity, View } from "react-native";
 import { Colors } from "@/constants/Colors";
-import { MaterialIcons } from "@expo/vector-icons";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import useThemeColors from "@/hooks/useThemeColor";
+import { StatusBar } from "expo-status-bar";
 
 export default function TabLayout() {
   const themeColor = useThemeColors();
@@ -15,50 +16,101 @@ export default function TabLayout() {
   return (
     <Stack
       screenOptions={{
-        header: () => (
+        header: ({ navigation, route }) => (
           <SafeAreaView>
+            <StatusBar backgroundColor={themeColor.cardsColor} />
             <ThemedView
               style={{
                 flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
                 padding: 10,
+                elevation: 2,
               }}
             >
-              <View style={{ flexDirection: "row" }}>
-                <ThemedText
+              {route.name === "gallery" ? (
+                <View
                   style={{
-                    fontSize: 22,
-                    fontFamily: "Inter",
-                    fontWeight: "bold",
+                    flexDirection: "row",
+                    columnGap: 10,
+                    alignItems: "center",
                   }}
                 >
-                  FreeFlow{" "}
-                </ThemedText>
-                <Text
+                  <TouchableOpacity onPress={() => navigation.goBack()}>
+                    <Ionicons
+                      name="arrow-back"
+                      size={22}
+                      color={themeColor.textColor}
+                    />
+                  </TouchableOpacity>
+                  <ThemedText
+                    style={{
+                      fontSize: 22,
+                      fontFamily: "Inter",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    FreeFlow{" "}
+                  </ThemedText>
+                  <Text
+                    style={{
+                      fontSize: 22,
+                      color: Colors.dark.primaryColor,
+                      fontFamily: "Inter",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    AI
+                  </Text>
+                </View>
+              ) : (
+                <View
                   style={{
-                    fontSize: 22,
-                    color: Colors.dark.primaryColor,
-                    fontFamily: "Inter",
-                    fontWeight: "bold",
+                    justifyContent: "space-between",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    flex: 1,
                   }}
                 >
-                  AI
-                </Text>
-              </View>
-              <TouchableOpacity>
-                <MaterialIcons
-                  name="photo-library"
-                  size={22}
-                  color={themeColor.textColor}
-                />
-              </TouchableOpacity>
+                  <View style={{ flexDirection: "row" }}>
+                    <ThemedText
+                      style={{
+                        fontSize: 22,
+                        fontFamily: "Inter",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      FreeFlow{" "}
+                    </ThemedText>
+                    <Text
+                      style={{
+                        fontSize: 22,
+                        color: Colors.dark.primaryColor,
+                        fontFamily: "Inter",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      AI
+                    </Text>
+                  </View>
+                  <TouchableOpacity
+                    onPress={() => {
+                      router.navigate("/gallery");
+                    }}
+                  >
+                    <MaterialIcons
+                      name="photo-library"
+                      size={22}
+                      color={themeColor.textColor}
+                    />
+                  </TouchableOpacity>
+                </View>
+              )}
             </ThemedView>
           </SafeAreaView>
         ),
       }}
     >
       <Stack.Screen name="index" />
+      <Stack.Screen name="gallery" />
     </Stack>
   );
 }

@@ -1,18 +1,21 @@
+import { setupDatabase } from "@/components/sqlite/ModelsData";
 import { ThemedView } from "@/components/ThemedView";
 import GenerateButton from "@/components/txt2img/GenerateButton";
 import GenerationSettings from "@/components/txt2img/GenerationSettings";
 import Models from "@/components/txt2img/Models";
 import Prompts from "@/components/txt2img/Prompts";
+import UpscalerSettings from "@/components/txt2img/UpscalerSettings";
 import { Colors } from "@/constants/Colors";
-import localization from "@/constants/languages";
-import {
-  ScrollView,
-  StyleSheet,
-  View
-} from "react-native";
+import useThemeColors from "@/hooks/useThemeColor";
+import { useEffect } from "react";
+import { ScrollView, StyleSheet, View } from "react-native";
 
 export default function HomeScreen() {
-  console.log(localization.welcome);
+  const themeColor = useThemeColors();
+
+  useEffect(() => {
+    setupDatabase();
+  }, []);
 
   return (
     <ThemedView
@@ -25,6 +28,7 @@ export default function HomeScreen() {
           <Prompts />
           <Models />
           <GenerationSettings />
+          <UpscalerSettings />
         </View>
       </ScrollView>
       <GenerateButton />

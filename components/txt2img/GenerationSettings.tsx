@@ -43,7 +43,7 @@ const GenerationSettings = () => {
           onChangeText={changeSeed}
         />
         <TouchableOpacity onPress={() => changeSeed("-1")}>
-          <Ionicons name="dice" size={30} color={themeColor.textColor} />
+          <Ionicons name="dice" size={25} color={themeColor.textColor} />
         </TouchableOpacity>
       </View>
     </ThemedView>

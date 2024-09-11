@@ -4,6 +4,7 @@ import { Txt2imgData } from "../api/demo";
 export async function setupDatabase() {
   const db = await SQLite.openDatabaseAsync("freeflow-ai");
 
+
   await db.execAsync(`
     PRAGMA journal_mode = WAL;
     CREATE TABLE IF NOT EXISTS "Txt2ImgRequests" (
@@ -33,18 +34,18 @@ export async function DB_NewTxt2ImgRequest(data: Txt2imgData) {
 
   const result = await db.runAsync(
     "INSERT INTO Txt2ImgRequests (Id,seed,count,width,height,positive_prompt,negative_prompt,sdModel,sdVae,steps,cfgScale,clipSkip,ENSD) VALUES (NULL,?,?,?,?,?,?,?,?,?,?,?,?);",
-    data.stages[0].inputInitialize.seed,
-    data.stages[0].inputInitialize.count,
-    data.stages[1].diffusion.width,
-    data.stages[1].diffusion.height,
-    data.stages[1].diffusion.prompts[0].text,
-    data.stages[1].diffusion.negativePrompts[0].text,
-    data.stages[1].diffusion.sdModel,
-    data.stages[1].diffusion.sdVae,
-    data.stages[1].diffusion.steps,
-    data.stages[1].diffusion.cfgScale,
-    data.stages[1].diffusion.clipSkip,
-    data.stages[1].diffusion.etaNoiseSeedDelta
+    data.stages[0].inputInitialize!.seed,
+    data.stages[0].inputInitialize!.count,
+    data.stages[1].diffusion!.width,
+    data.stages[1].diffusion!.height,
+    data.stages[1].diffusion!.prompts[0].text,
+    data.stages[1].diffusion!.negativePrompts![0].text,
+    data.stages[1].diffusion!.sdModel,
+    data.stages[1].diffusion!.sdVae,
+    data.stages[1].diffusion!.steps,
+    data.stages[1].diffusion!.cfgScale,
+    data.stages[1].diffusion!.clipSkip,
+    data.stages[1].diffusion!.etaNoiseSeedDelta!
   );
   console.log(result.lastInsertRowId, result.changes);
 }

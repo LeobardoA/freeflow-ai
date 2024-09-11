@@ -1,21 +1,12 @@
-import { useGenerationStore } from "@/components/contexts/GenerationStore";
-import { ThemedText } from "@/components/ThemedText";
-import { Colors } from "@/constants/Colors";
 import localization from "@/constants/languages";
 import useThemeColors from "@/hooks/useThemeColor";
-import { FontAwesome, Ionicons } from "@expo/vector-icons";
+import { FontAwesome } from "@expo/vector-icons";
 import React from "react";
-import {
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  useColorScheme,
-  View,
-} from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 interface SizeButtonProps {
   isFocused: boolean;
-  onPress: () => void;
+  onPress: (index: number) => void;
   index: number;
   baseModel: string;
 }
@@ -82,13 +73,7 @@ const SizeButton = ({
   return (
     <TouchableOpacity
       onPress={() => {
-        if (index < 3) {
-          let x, y;
-          x = Number.parseInt(buttonText.split("x")[0]);
-          y = Number.parseInt(buttonText.split("x")[1]);
-          useGenerationStore.setState({ width: x, height: y });
-        }
-        onPress();
+        onPress(index);
       }}
       style={[
         styles.button,
@@ -118,11 +103,7 @@ const SizeButton = ({
             }}
           />
         ) : (
-          <FontAwesome
-            name="sliders"
-            size={25}
-            color={themeColor.textColor}
-          />
+          <FontAwesome name="sliders" size={25} color={themeColor.textColor} />
         )}
         <Text
           style={{

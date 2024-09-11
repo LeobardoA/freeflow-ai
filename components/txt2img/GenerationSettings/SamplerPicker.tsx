@@ -1,5 +1,7 @@
 import { useGenerationStore } from "@/components/contexts/GenerationStore";
+import { ThemedText } from "@/components/ThemedText";
 import { Sampler } from "@/constants/API_CONSTANTS";
+import localization from "@/constants/languages";
 import useThemeColors from "@/hooks/useThemeColor";
 import { Picker } from "@react-native-picker/picker";
 import React from "react";
@@ -11,6 +13,7 @@ const SamplerPicker = () => {
 
   return (
     <View>
+      <ThemedText>{localization.samplerMethod}</ThemedText>
       <Picker
         mode="dropdown"
         selectedValue={sampler}

@@ -1,25 +1,31 @@
-import React from "react";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
-import { ThemedText } from "../ThemedText";
-import { Picker } from "@react-native-picker/picker";
 import localization from "@/constants/languages";
 import useThemeColors from "@/hooks/useThemeColor";
-import { useGenerationStore } from "../contexts/GenerationStore";
+import { Picker } from "@react-native-picker/picker";
+import React, { useState } from "react";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { createTxt2imgData, text2img } from "../api/demo";
+import { useGenerationStore } from "../contexts/GenerationStore";
+import { ThemedText } from "../ThemedText";
 import { ThemedView } from "../ThemedView";
+import GeneratedImageModal from "./GeneratedImageModal";
 
 const GenerateButton = () => {
   const themeColor = useThemeColors();
-
   const count = useGenerationStore((state) => state.count);
-
+  const progressMessage = useGenerationStore(
+    (state) => state.extra_progressMessage
+  );
   const data = useGenerationStore();
+  const [isLoading, setIsLoading] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
-  const generateImage = async () => {
+  const [imgUrl, setImgUrl] = useState<any>("");
+
+  const handleGenerate = async () => {
+    setIsLoading(true);
     console.log("Generating Images...");
     const generationData = createTxt2imgData();
 
-    // Usando optional chaining correctamente
     generationData.stages[0].inputInitialize!.seed = data.seed;
     generationData.stages[0].inputInitialize!.count = data.count;
     generationData.stages[1].diffusion!.width = data.width;
@@ -31,9 +37,24 @@ const GenerateButton = () => {
     generationData.stages[1].diffusion!.sampler = data.sampler;
     generationData.stages[1].diffusion!.cfgScale = data.cfgScale;
     generationData.stages[1].diffusion!.steps = data.steps;
+    generationData.stages[1].diffusion!.lora = data.lora;
+    if (data.image_to_upscaler !== undefined) {
+      generationData.stages[2] = {
+        type: "IMAGE_TO_UPSCALER",
+        image_to_upscaler: data.image_to_upscaler,
+      };
+    }
 
-    // console.log(JSON.stringify(generationData, null, 4));
-    await text2img(generationData);
+    // console.log(JSON.stringify(generationData, null, 2));
+    const result = await text2img(generationData);
+    // console.log("SE OBTUVO EL RESULTADO", JSON.stringify(result, null, 2));
+    setImgUrl(result);
+    setIsLoading(false);
+    setIsModalVisible(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalVisible(false);
   };
 
   return (
@@ -73,11 +94,24 @@ const GenerateButton = () => {
             styles.generateBtn,
             { backgroundColor: themeColor.secondaryColor },
           ]}
-          onPress={generateImage}
+          onPress={handleGenerate}
+          disabled={isLoading}
         >
-          <ThemedText>{localization.generate}</ThemedText>
+          <ThemedText>
+            {isLoading
+              ? localization.loadingResource + "..."
+              : localization.generate}
+          </ThemedText>
         </TouchableOpacity>
       </View>
+      {progressMessage && (
+        <ThemedText style={{ fontSize: 10 }}>{progressMessage}</ThemedText>
+      )}
+      <GeneratedImageModal
+        isVisible={isModalVisible}
+        onClose={handleCloseModal}
+        imgUrl={imgUrl}
+      />
     </ThemedView>
   );
 };
@@ -107,6 +141,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     borderWidth: 1,
-    marginHorizontal: 10
+    marginHorizontal: 10,
   },
 });

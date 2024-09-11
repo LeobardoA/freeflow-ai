@@ -1,7 +1,6 @@
 import * as Localization from "expo-localization";
 
 interface LocalizationStrings {
-  welcome: string;
   positivePrompt: string;
   negativePrompt: string;
   models: string;
@@ -12,8 +11,11 @@ interface LocalizationStrings {
   width: string;
   height: string;
   steps: string;
+  samplerMethod: string;
+  cfgScale: string;
   seed: string;
   generate: string;
+  add: string;
 }
 
 const languages: Record<string, LocalizationStrings> = {

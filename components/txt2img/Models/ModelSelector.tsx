@@ -14,7 +14,7 @@ import {
 
 interface ModelSelectorProps {
   data: ModelDataProps;
-  onClose: (id: string) => void;
+  onClose: (id: string, base: string) => void;
 }
 
 const ModelSelector = ({ data, onClose }: ModelSelectorProps) => {
@@ -46,7 +46,9 @@ const ModelSelector = ({ data, onClose }: ModelSelectorProps) => {
                 Colors[colorScheme === "light" ? "light" : "dark"].borderColor,
             },
           ]}
-          onPress={()=>{onClose(data.uniqueId)}}
+          onPress={() => {
+            onClose(data.uniqueId, data.baseModel);
+          }}
         >
           <ThemedText style={{ fontSize: 12 }}>
             {localization.select}

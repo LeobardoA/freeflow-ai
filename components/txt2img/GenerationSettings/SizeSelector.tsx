@@ -1,6 +1,6 @@
 import { useGenerationStore } from "@/components/contexts/GenerationStore";
 import { Colors } from "@/constants/Colors";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, useColorScheme, View } from "react-native";
 import CustomSize from "./CustomSize";
 import SizeButton from "./SizeButton";
@@ -11,7 +11,46 @@ const SizeSelector = () => {
 
   const handlePress = (index: number) => {
     setSelectedButton(index);
+    let x: number, y: number;
+    switch (index) {
+      case 0:
+        if (baseModel === "SD 1.5") {
+          x = 512;
+          y = 512;
+        } else {
+          x = 1024;
+          y = 1024;
+        }
+        useGenerationStore.setState({ width: x, height: y });
+        break;
+      case 1:
+        if (baseModel === "SD 1.5") {
+          x = 512;
+          y = 768;
+        } else {
+          x = 832;
+          y = 1216;
+        }
+        useGenerationStore.setState({ width: x, height: y });
+        break;
+      case 2:
+        if (baseModel === "SD 1.5") {
+          x = 768;
+          y = 512;
+        } else {
+          x = 1216;
+          y = 832;
+        }
+        useGenerationStore.setState({ width: x, height: y });
+        break;
+    }
   };
+
+  useEffect(() => {
+    if (selectedButton < 3) {
+      handlePress(selectedButton);
+    }
+  }, [baseModel]);
 
   const colorScheme = useColorScheme();
 
@@ -30,17 +69,13 @@ const SizeSelector = () => {
           <SizeButton
             key={index}
             isFocused={selectedButton === index}
-            onPress={() => handlePress(index)}
+            onPress={handlePress}
             index={index}
             baseModel={baseModel}
           />
         ))}
       </View>
-      {selectedButton === 3 ? (
-        <CustomSize />
-      ) : (
-        <View />
-      )}
+      {selectedButton === 3 ? <CustomSize /> : <View />}
     </View>
   );
 };
@@ -49,7 +84,7 @@ const styles = StyleSheet.create({
   container: {
     alignItems: "center",
     justifyContent: "center",
-    rowGap: 10
+    rowGap: 10,
   },
   btnsContainer: {
     width: "100%",
