@@ -6,15 +6,56 @@ import { ThemedText } from "@/components/ThemedText";
 import { ThemedTextInput } from "@/components/ThemedTextInput";
 import useThemeColors from "@/hooks/useThemeColor";
 import localization from "@/constants/languages";
+import { useNumericDebouncer } from "@/hooks/useNumericDebouncer";
 
 const CustomSize = () => {
   const themeColor = useThemeColors();
 
-  const width = useGenerationStore((state) => state.width);
-  const height = useGenerationStore((state) => state.height);
+  // Inicializamos los valores desde el store directamente
+  const initialWidth = useGenerationStore((state) => state.width);
+  const initialHeight = useGenerationStore((state) => state.height);
+
+  // Manejamos estados locales y sus correspondientes versiones para el TextInput
+  const [localWidth, setLocalWidth] = useState<number>(initialWidth);
+  const [width, setWidth] = useState<string>("" + initialWidth);
+  const [localHeight, setLocalHeight] = useState<number>(initialHeight);
+  const [height, setHeight] = useState<string>("" + initialHeight);
+
+  // Debounced values
+  const debouncedWidth = useNumericDebouncer(localWidth);
+  const debouncedHeight = useNumericDebouncer(localHeight);
+
+  // Solo actualizamos el estado global cuando el valor ha sido debounced
+  useEffect(() => {
+    useGenerationStore.setState({ width: debouncedWidth });
+  }, [debouncedWidth]);
+
+  useEffect(() => {
+    useGenerationStore.setState({ height: debouncedHeight });
+  }, [debouncedHeight]);
+
+  // Handlers para cambios en los inputs
+  const handleWidthChange = (text: string) => {
+    if (!isNaN(Number(text))) {
+      setLocalWidth(Number(text) || 1);
+      setWidth(text);
+    } else {
+      setWidth("");
+    }
+  };
+
+  const handleHeightChange = (text: string) => {
+    if (!isNaN(Number(text))) {
+      setLocalHeight(Number(text) || 1);
+      setHeight(text);
+    } else {
+      setHeight("");
+    }
+  };
 
   return (
     <View style={styles.content}>
+      {/* WIDTH */}
       <View style={{ justifyContent: "center", alignItems: "center" }}>
         <ThemedText>{localization.width}</ThemedText>
         <View style={{ flexDirection: "row" }}>
@@ -25,17 +66,15 @@ const CustomSize = () => {
             maximumTrackTintColor={themeColor.textColor}
             minimumValue={1}
             maximumValue={2000}
-            onValueChange={(value) => {
-              useGenerationStore.setState({ width: value });
-            }}
+            onValueChange={(value) => handleWidthChange(value.toString())}
             step={1}
-            value={width}
+            value={localWidth}
           />
           <ThemedTextInput
             style={styles.textInput}
             keyboardType="numeric"
-            value={"" + width}
-            editable={false}
+            value={width}
+            onChangeText={handleWidthChange}
           />
         </View>
       </View>
@@ -50,17 +89,15 @@ const CustomSize = () => {
             maximumTrackTintColor={themeColor.textColor}
             minimumValue={1}
             maximumValue={2000}
-            onValueChange={(value) => {
-              useGenerationStore.setState({ height: value });
-            }}
+            onValueChange={(value) => handleHeightChange(value.toString())}
             step={1}
-            value={height}
+            value={localHeight}
           />
           <ThemedTextInput
             style={styles.textInput}
             keyboardType="numeric"
-            value={"" + height}
-            editable={false}
+            value={height}
+            onChangeText={handleHeightChange}
           />
         </View>
       </View>

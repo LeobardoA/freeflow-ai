@@ -1,5 +1,4 @@
 import * as SQLite from "expo-sqlite";
-import { checkModelData } from "../api/demo";
 
 export interface ModelDataProps {
   uniqueId: string;

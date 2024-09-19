@@ -29,6 +29,7 @@ export interface GenerationStore {
     hr_second_pass_steps: number;
     denoising_strength: number;
   };
+  remainingCredits: number;
   _hasHydrated: boolean;
   extra_progressMessage?:string;
 
@@ -52,6 +53,7 @@ export const useGenerationStore = create(
       clipSkip: 2,
       etaNoise: 3737,
       extra_baseModel: "Pony",
+      remainingCredits: 762,
       _hasHydrated: false,
       setHasHydrated: (state) => {
         set({

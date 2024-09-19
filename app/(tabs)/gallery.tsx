@@ -47,32 +47,50 @@ const gallery = () => {
     }
   }, [images]);
 
+  const parseIdFromLink = (link: string): string | undefined => {
+    const match = link.match(/\/(\d+)\/*$/);
+    return match ? match[1] : undefined;
+  };
+
   const handleModelSearch = async () => {
     if (modelId) {
-      setIsLoading(true);
-      console.log("Buscando modelo...");
-      const data = await checkModelData(modelId);
-      setId(data.id);
-      setName(data.name);
-      setDesc(data.description);
-      setBaseModel(data.baseModel);
-      setModelType(data.modelType);
-      setProjectName(data.projectName);
-      setTriggerWords(data.triggerWords);
-      setImages(data.showcaseImageUrls);
-      setIsLoading(false);
+      if (!isNaN(Number(modelId))) {
+        setIsLoading(true);
+        console.log("Buscando modelo...");
+        const data = await checkModelData(modelId);
+        setId(data.id);
+        setName(data.name);
+        setDesc(data.description);
+        setBaseModel(data.baseModel);
+        setModelType(data.modelType);
+        setProjectName(data.projectName);
+        setTriggerWords(data.triggerWords);
+        setImages(data.showcaseImageUrls);
+        setIsLoading(false);
+      } else {
+        const id = parseIdFromLink(modelId);
+        if (id) {
+          setIsLoading(true);
+          console.log("Buscando modelo...");
+          const data = await checkModelData(id);
+          setId(data.id);
+          setName(data.name);
+          setDesc(data.description);
+          setBaseModel(data.baseModel);
+          setModelType(data.modelType);
+          setProjectName(data.projectName);
+          setTriggerWords(data.triggerWords);
+          setImages(data.showcaseImageUrls);
+          setIsLoading(false);
+        } else {
+          Alert.alert("Error", "El link no es valido");
+        }
+      }
     }
   };
 
   const handleNewModel = async () => {
-    if (
-      baseModel &&
-      selectedImage &&
-      modelType &&
-      name &&
-      projectName &&
-      id
-    ) {
+    if (baseModel && selectedImage && modelType && name && projectName && id) {
       console.log("Cargando modelo...");
       await DB_NewModelData({
         baseModel,
@@ -155,6 +173,7 @@ const gallery = () => {
                       {item.map((image, index) => (
                         <TouchableOpacity
                           onPress={() => setSelectedImage(image)}
+                          key={index}
                         >
                           <Image
                             source={{ uri: image }}

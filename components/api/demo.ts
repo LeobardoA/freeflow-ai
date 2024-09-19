@@ -100,8 +100,8 @@ export function createTxt2imgData(): Txt2imgData {
   };
 }
 
-export async function text2img(data: Txt2imgData | null) {
-  console.log(JSON.stringify(data, null, ));
+export async function text2img(data: Txt2imgData | null, credits: number) {
+  // console.log(JSON.stringify(data, null));
   if (data !== null) {
     const id = await createMD5();
     data.requestId = id;
@@ -111,6 +111,10 @@ export async function text2img(data: Txt2imgData | null) {
       const job_id = job_dict.id;
       const job_status = job_dict.status;
       // console.log(job_id, job_status);
+      useGenerationStore.setState({
+        remainingCredits:
+          useGenerationStore.getState().remainingCredits - credits,
+      });
       const result = await getJobResult(job_id);
       return result;
     }
@@ -202,7 +206,7 @@ export async function getJobResult(jobId: string) {
       const jobDict = resp.job;
       const jobStatus = jobDict.status;
       useGenerationStore.setState({
-        extra_progressMessage: JSON.stringify(jobDict),
+        extra_progressMessage: JSON.stringify(jobDict, null, 4),
       });
       if (jobStatus === "SUCCESS") {
         // console.log(JSON.stringify(jobDict));

@@ -9,9 +9,12 @@ import { Colors } from "@/constants/Colors";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import useThemeColors from "@/hooks/useThemeColor";
 import { StatusBar } from "expo-status-bar";
+import { useGenerationStore } from "@/components/contexts/GenerationStore";
 
 export default function TabLayout() {
   const themeColor = useThemeColors();
+
+  const remainingCredits = useGenerationStore((state) => state.remainingCredits);
 
   return (
     <Stack
@@ -91,17 +94,23 @@ export default function TabLayout() {
                       AI
                     </Text>
                   </View>
-                  <TouchableOpacity
-                    onPress={() => {
-                      router.navigate("/gallery");
-                    }}
-                  >
-                    <MaterialIcons
-                      name="photo-library"
-                      size={22}
-                      color={themeColor.textColor}
-                    />
-                  </TouchableOpacity>
+                  <View style={{ flexDirection: "row", columnGap: 25 }}>
+                    <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+                      <MaterialIcons name="bolt" size={24} color={themeColor.primaryColor}/>
+                    <ThemedText style={{ fontWeight: "bold" }}>{remainingCredits}</ThemedText>
+                    </View>
+                    <TouchableOpacity
+                      onPress={() => {
+                        router.navigate("/gallery");
+                      }}
+                    >
+                      <MaterialIcons
+                        name="photo-library"
+                        size={22}
+                        color={themeColor.textColor}
+                      />
+                    </TouchableOpacity>
+                  </View>
                 </View>
               )}
             </ThemedView>
